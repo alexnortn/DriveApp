@@ -13,6 +13,8 @@
 
     <pre id="content"></pre>
 
+    <img id="image_test" alt="whatever">
+
     <script type="text/javascript">
       // Client ID and API key from the Developer Console
       var CLIENT_ID = '701862173721-o1os4novfhibkq40dg0c4o5m1tl70pco.apps.googleusercontent.com';
@@ -22,10 +24,11 @@
 
       // Authorization scopes required by the API; multiple scopes can be
       // included, separated by spaces.
-      var SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly';
+      var SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
 
       var authorizeButton = document.getElementById('authorize-button');
       var signoutButton = document.getElementById('signout-button');
+      var imageEl = document.getElementById('image_test');
 
       /**
        *  On load, called to load the auth2 library and API client library.
@@ -51,9 +54,6 @@
           updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
           authorizeButton.onclick = handleAuthClick;
           signoutButton.onclick = handleSignoutClick;
-
-          // Console stuff
-          debugger;
         });
       }
 
@@ -65,7 +65,11 @@
         if (isSignedIn) {
           authorizeButton.style.display = 'none';
           signoutButton.style.display = 'block';
-          listFiles2();
+          // listFiles2();
+          getFile();
+          // printFile('0BxAjM9BOzF8OY2czenI0TDRfdkE');
+           // Render image to DOM
+          // imageEl.src = GET https://www.googleapis.com/drive/v3/files/0BxAjM9BOzF8OY2czenI0TDRfdkE
         } else {
           authorizeButton.style.display = 'block';
           signoutButton.style.display = 'none';
@@ -126,7 +130,10 @@
         gapi.client.drive.files.list({
           'pageSize': 10,
           // 'q'       : "mimeType='image/jpeg'",
-          'q'       : "name='Swissnapse'",
+          // 'q'       : "mimeType = 'image/' and name = 'swissnapse_test'",
+          // 'q'          : "mimeType = 'application/vnd.google-apps.folder' and name = 'test_dir'",
+          'q'          : "'0BxAjM9BOzF8ObXNuSUVFNlFSV00' in parents",
+          // 'q'       : "name = 'swissnapse_dir'",
           'fields'  : "nextPageToken, files(id, name)"
         }).then(function(response) {
           appendPre('Files:');
@@ -141,6 +148,64 @@
           }
         });
       }
+
+      function getFile() {
+        gapi.client.drive.files.get ({
+          'fileId' : "0BxAjM9BOzF8OY2czenI0TDRfdkE",
+          // 'alt': "media",
+        }).then(function(response) {
+            // imageEl.src = "data:image/jpeg;base64," + response.body;
+            // appendPre(response.body);
+
+            // console.log('Name: ' + response.result.name);
+            // console.log('Kind: ' + response.result.kind);
+            // console.log('MIME type: ' + response.result.mimeType);
+            // console.log('Id: ' + response.result.id);
+            debugger;
+        });
+      }
+
+      /**
+       * Print a file's metadata.
+       *
+       * @param {String} fileId ID of the file to print metadata for.
+       */
+      function printFile(fileId) {
+        var request = gapi.client.drive.files.get({
+          'fileId': fileId,
+          'alt': 'media'
+        });
+        request.execute(function(resp) {
+          console.log('Title: ' + resp.title);
+          console.log('Description: ' + resp.description);
+          console.log('MIME type: ' + resp.createdDate);
+        });
+      }
+
+
+    /**
+     * Download a file's content.
+     *
+     * @param {File} file Drive File instance.
+     * @param {Function} callback Function to call when the request is complete.
+     */
+    // function downloadFile(file, callback) {
+    //   if (file.downloadUrl) {
+    //     var accessToken = gapi.auth.getToken().access_token;
+    //     var xhr = new XMLHttpRequest();
+    //     xhr.open('GET', file.downloadUrl);
+    //     xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    //     xhr.onload = function() {
+    //       callback(xhr.responseText);
+    //     };
+    //     xhr.onerror = function() {
+    //       callback(null);
+    //     };
+    //     xhr.send();
+    //   } else {
+    //     callback(null);
+    //   }
+    // }
 
     </script>
 
