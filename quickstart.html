@@ -13,11 +13,12 @@
 
     <pre id="content"></pre>
 
-    <img id="image_test" alt="whatever">
+    <img id="image_test" style="width: 500px;" alt="Hanger18">
 
     <script type="text/javascript">
       // Client ID and API key from the Developer Console
-      var CLIENT_ID = '701862173721-o1os4novfhibkq40dg0c4o5m1tl70pco.apps.googleusercontent.com';
+      // var CLIENT_ID = '701862173721-o1os4novfhibkq40dg0c4o5m1tl70pco.apps.googleusercontent.com';
+      var CLIENT_ID = '589947326174-hddn2v0espas0t3bqvu0h2ilgno39e5k.apps.googleusercontent.com'
 
       // Array of API discovery doc URLs for APIs used by the quickstart
       var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
@@ -130,9 +131,9 @@
         gapi.client.drive.files.list({
           'pageSize': 10,
           // 'q'       : "mimeType='image/jpeg'",
-          // 'q'       : "mimeType = 'image/' and name = 'swissnapse_test'",
-          // 'q'          : "mimeType = 'application/vnd.google-apps.folder' and name = 'test_dir'",
-          'q'          : "'0BxAjM9BOzF8ObXNuSUVFNlFSV00' in parents",
+          // 'q'       : "mimeType = 'image/' and name = 'smart_mocks'",
+          // 'q'          : "mimeType = 'application/vnd.google-apps.folder' and name = 'smart_mocks_master'",
+          // 'q'          : "'0Bxz42sAeyH12RXRYQ19XRUY5Y0k' in parents",
           // 'q'       : "name = 'swissnapse_dir'",
           'fields'  : "nextPageToken, files(id, name)"
         }).then(function(response) {
@@ -151,17 +152,16 @@
 
       function getFile() {
         gapi.client.drive.files.get ({
-          'fileId' : "0BxAjM9BOzF8OY2czenI0TDRfdkE",
+          'fileId' : "0Bxz42sAeyH12b1NaMHhsdHBSRFk", // Dashboard mock
+          'fields': '*',
           // 'alt': "media",
         }).then(function(response) {
-            // imageEl.src = "data:image/jpeg;base64," + response.body;
-            // appendPre(response.body);
+            let url = response.result.webContentLink;
+            let trim = "&export=download";
 
-            // console.log('Name: ' + response.result.name);
-            // console.log('Kind: ' + response.result.kind);
-            // console.log('MIME type: ' + response.result.mimeType);
-            // console.log('Id: ' + response.result.id);
-            debugger;
+            let img_url = url.substring(0, url.indexOf(trim));
+
+            imageEl.src = img_url;
         });
       }
 
